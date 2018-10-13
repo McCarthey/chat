@@ -8,6 +8,24 @@
   </div>
 </template>
 
+<script>
+import io from 'socket.io-client'
+
+export default {
+  data() {
+    return {
+      socketObj: ''
+    }
+  },
+  methods: {
+    initSocket() {
+      this.socket = io('http://localhost:8770')
+    }
+  }
+}
+</script>
+
+
 <style lang="scss">
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
