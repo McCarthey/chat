@@ -1,57 +1,95 @@
 <template>
   <div class="home">
-    <h1>this is home page</h1>
-    <button @click="closeSocket">close socket</button>
-    <div>
-      <p v-for="(msg, index) in msgList" :key="index">{{ msg }}</p>
+    <h1>Chat now</h1>
+    <div class="message-content">
+      <p v-for="(msg, index) in msgList"
+        :key="index">{{ msg }}</p>
     </div>
-    <input type="text" v-model='inputText'>
-    <button @click="sendMessage">Send</button>
+    <div class="input__wrap">
+      <mu-text-field v-model='inputText'
+        @keyup.enter="sendMessage"
+        multi-line
+        :rows="4"
+        solo
+        full-width></mu-text-field>
+      <div class="btn-send__wrap">
+        <mu-button color="primary"
+          @click="sendMessage">Send</mu-button>
+      </div>
+    </div>
+    <!-- <button @click="closeSocket">close socket</button> -->
   </div>
 </template>
 
 <script>
-// @ is an alias to /src
+  // @ is an alias to /src
 
-import io from 'socket.io-client'
+  import io from 'socket.io-client'
 
-export default {
-  name: 'home',
-  data() {
-    return {
-      socketObj: '',
-      msgList: [],
-      inputText: ''
-    }
-  },
-  methods: {
-    initSocket() {
-      this.socketObj = io('http://10.0.21.16:8770/')
-      this.socketObj.on('connect', () => {
-        console.log('start')
-      })
-      console.log(this.socketObj)
-      this.socketObj.on('disconnect', () => {
-        console.log('chat closed')
-      })
-      this.socketObj.on('chat message', msg => {
-        this.msgList.push(msg)
-      })
-    },
-    sendMessage() {
-      if (!this.inputText) {
-        console.log('Message cannot be empty!')
-        return 
+  export default {
+    name: 'home',
+    data() {
+      return {
+        socketObj: '',
+        msgList: [],
+        inputText: ''
       }
-      this.socketObj.emit('chat message', this.inputText)
-      this.inputText = ''
     },
-    closeSocket() {
-      this.socketObj.disconnect()
+    methods: {
+      initSocket() {
+        this.socketObj = io('http://10.0.21.16:8770/')
+        this.socketObj.on('connect', () => {
+          console.log('start')
+        })
+        console.log(this.socketObj)
+        this.socketObj.on('disconnect', () => {
+          console.log('chat closed')
+        })
+        this.socketObj.on('chat message', msg => {
+          this.msgList.push(msg)
+        })
+      },
+      sendMessage() {
+        if (!this.inputText) {
+          console.log('Message cannot be empty!')
+          return
+        }
+        this.socketObj.emit('chat message', this.inputText)
+        this.inputText = ''
+      },
+      closeSocket() {
+        this.socketObj.disconnect()
+      }
+    },
+    created() {
+      this.initSocket()
+    },
+    destroyed() {
+      this.closeSocket()
     }
-  },
-  created(){
-    this.initSocket()
   }
-}
 </script>
+
+<style lang="scss">
+  @mixin content__wrap {
+      border: 1px solid #ddd;
+      width: 90%;
+      margin: 0 auto;
+      max-width: 800px;
+  }
+  .message-content {
+      @include content__wrap;
+      height: 600px;
+      overflow-y: scroll;
+  }
+  .input__wrap {
+      @include content__wrap;
+      border-top: 0;
+      padding-left: 20px;
+      .btn-send__wrap {
+          text-align: right;
+      }
+  }
+</style>
+
+
