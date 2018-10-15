@@ -32,7 +32,8 @@
       return {
         socketObj: '',
         msgList: [],
-        inputText: ''
+        inputText: '',
+        status: ''
       }
     },
     methods: {
@@ -40,10 +41,12 @@
         this.socketObj = io('http://10.0.21.16:8770/')
         this.socketObj.on('connect', () => {
           console.log('start')
+          this.status = 'start'
         })
         console.log(this.socketObj)
         this.socketObj.on('disconnect', () => {
-          console.log('chat closed')
+          this.status = 'closed'
+          console.log('chat closed', this.status)
         })
         this.socketObj.on('chat message', msg => {
           this.msgList.push(msg)
@@ -54,8 +57,11 @@
           console.log('Message cannot be empty!')
           return
         }
-        this.socketObj.emit('chat message', this.inputText)
-        this.inputText = ''
+        this.socketObj.emit('chat message', 'McCarthey', this.inputText)
+        if (this.status && this.status !== 'closed') {
+          this.msgList.push(`McCarthey said: ${this.inputText}`)
+          this.inputText = ''
+        }
       },
       closeSocket() {
         this.socketObj.disconnect()

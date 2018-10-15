@@ -10,5 +10,3 @@ Chat webapp
 # Server side
 1. /friendList/:userId
 2. Init socket
-
- 
