@@ -18,6 +18,7 @@
       </div>
     </div>
     <!-- <button @click="closeSocket">close socket</button> -->
+    <name-dialog v-show="nameDialogShow" @close="closeNameDialog"></name-dialog>
   </div>
 </template>
 
@@ -25,6 +26,7 @@
   // @ is an alias to /src
 
   import io from 'socket.io-client'
+  import NameDialog from '@/components/NameDialog'
 
   export default {
     name: 'home',
@@ -33,8 +35,13 @@
         socketObj: '',
         msgList: [],
         inputText: '',
-        status: ''
+        status: '',
+        
+        nameDialogShow: false
       }
+    },
+    components: {
+      NameDialog
     },
     methods: {
       initSocket() {
@@ -65,10 +72,20 @@
       },
       closeSocket() {
         this.socketObj.disconnect()
+      },
+      
+      closeNameDialog() {
+        this.nameDialogShow = false
+        
       }
     },
     created() {
       this.initSocket()
+    },
+    mounted() {
+      if(!localStorage.getItem('MC_CHAT_NAME')) {
+        this.nameDialogShow = true
+      }
     },
     destroyed() {
       this.closeSocket()
