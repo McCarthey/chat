@@ -8,6 +8,8 @@
   },
   "dependencies": {
     "muse-ui": "^3.0.1",
+    "muse-ui-carbon-theme": "^0.1.0",
+    "muse-ui-toast": "^0.3.0",
     "socket.io-client": "^2.1.1",
     "vue": "^2.5.17",
     "vue-router": "^3.0.1",
