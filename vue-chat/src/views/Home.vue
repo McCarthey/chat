@@ -2,8 +2,10 @@
   <div class="home">
     <h1>Chat now</h1>
     <div class="message-content">
-      <p v-for="(msg, index) in msgList"
-        :key="index">{{ msg }}</p>
+      <div class="message-item"
+        :class="item.from === 'me'? 'message-item__me': 'message-item__others'"
+        v-for="(item, index) in msgList"
+        :key="index">{{ item.from}}: {{ item.msg }}</div>
     </div>
     <div class="input__wrap">
       <mu-text-field v-model='inputText'
@@ -18,7 +20,8 @@
       </div>
     </div>
     <!-- <button @click="closeSocket">close socket</button> -->
-    <name-dialog v-show="nameDialogShow" @close="closeNameDialog"></name-dialog>
+    <name-dialog v-if="nameDialogShow"
+      @close="closeNameDialog"></name-dialog>
   </div>
 </template>
 
@@ -36,7 +39,7 @@
         msgList: [],
         inputText: '',
         status: '',
-        
+
         nameDialogShow: false
       }
     },
@@ -55,8 +58,8 @@
           this.status = 'closed'
           console.log('chat closed', this.status)
         })
-        this.socketObj.on('chat message', msg => {
-          this.msgList.push(msg)
+        this.socketObj.on('chat message', (from, msg) => {
+          this.msgList.push({ from, msg })
         })
       },
       sendMessage() {
@@ -64,26 +67,35 @@
           console.log('Message cannot be empty!')
           return
         }
-        this.socketObj.emit('chat message', 'McCarthey', this.inputText)
+        this.socketObj.emit('chat message', this.userName, this.inputText)
         if (this.status && this.status !== 'closed') {
-          this.msgList.push(`McCarthey said: ${this.inputText}`)
+          const msgObj = {
+            from: 'me',
+            msg: `${this.inputText}`
+          }
+          this.msgList.push(msgObj)
           this.inputText = ''
         }
       },
       closeSocket() {
         this.socketObj.disconnect()
       },
-      
+
       closeNameDialog() {
+        this.getUserName()
         this.nameDialogShow = false
-        
+      },
+
+      getUserName() {
+        this.userName = localStorage.getItem('MC_CHAT_NAME')
       }
     },
     created() {
       this.initSocket()
+      this.getUserName()
     },
     mounted() {
-      if(!localStorage.getItem('MC_CHAT_NAME')) {
+      if (!this.userName) {
         this.nameDialogShow = true
       }
     },
@@ -94,6 +106,7 @@
 </script>
 
 <style lang="scss">
+  $color1: #9eea6a;
   @mixin content__wrap {
       border: 1px solid #ddd;
       width: 90%;
@@ -104,6 +117,7 @@
       @include content__wrap;
       height: 600px;
       overflow-y: scroll;
+      background-color: #f6f6f6;
   }
   .input__wrap {
       @include content__wrap;
@@ -111,6 +125,25 @@
       padding-left: 20px;
       .btn-send__wrap {
           text-align: right;
+      }
+  }
+  .message-item {
+      text-align: left;
+      margin: 10px;
+      padding: 10px 6px;
+      border-radius: 4px;
+      border: 1px solid #e3e3e3;
+  }
+  .message-item__me {
+      background-color: $color1;
+      &:hover {
+          background-color: darken($color: $color1, $amount: 5%);
+      }
+  }
+  .message-item__others {
+      background-color: #fff;
+      &:hover {
+          background-color: #b5b5b5;
       }
   }
 </style>
