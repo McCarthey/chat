@@ -4,12 +4,19 @@ import 'muse-ui/dist/muse-ui.css';
 import App from './App.vue'
 import router from './router'
 import store from './store'
+import axios from 'axios'
 
 import Toast from 'muse-ui-toast';
 
+import VueMaterial from 'vue-material'
+import 'vue-material/dist/vue-material.min.css'
+
 Vue.use(MuseUI)
-Vue.use(Toast, { position: 'top' ,time: 10000 })
+Vue.use(VueMaterial)
+Vue.use(Toast, {position: 'top', time: 10000})
+
 Vue.config.productionTip = false
+Vue.prototype.$ajax = axios
 
 new Vue({
     router,

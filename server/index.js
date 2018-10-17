@@ -4,6 +4,7 @@ const app = express()
 
 const bodyParser = require('body-parser')
 const multer = require('multer')
+const upload = multer() // for parsing multipart/form-data
 
 const port = 8770
 const server = app.listen(port, () => {
@@ -18,7 +19,7 @@ app.get('/', (req, res) => {
     res.send('Hello World!');
 });
 
-app.post('/upload', (req, res) => {
+app.post('/upload', upload.array(), (req, res) => {
     console.log(req.body)
     res.send('for uploading imgs');
 })

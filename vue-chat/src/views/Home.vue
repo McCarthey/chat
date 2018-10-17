@@ -21,6 +21,12 @@
         <mu-button color="primary"
           @click="sendMessage">Send</mu-button>
       </div>
+      <md-field>
+        <label>Upload your avatar</label>
+        <md-file v-model="avatarToUpload" />
+      </md-field>
+      <mu-button color="success"
+        @click="uploadAvatar">upload</mu-button>
     </div>
     <!-- <button @click="closeSocket">close socket</button> -->
     <name-dialog v-if="nameDialogShow"
@@ -36,16 +42,16 @@
 
   export default {
     name: 'home',
-    data() {
-      return {
-        socketObj: '',
-        msgList: [],
-        inputText: '',
-        status: '',
+    data: () => ({
+      socketObj: '',
+      msgList: [],
+      inputText: '',
+      status: '',
 
-        nameDialogShow: false
-      }
-    },
+      avatarToUpload: null,
+
+      nameDialogShow: false
+    }),
     components: {
       NameDialog
     },
@@ -91,6 +97,13 @@
 
       getUserName() {
         this.userName = localStorage.getItem('MC_CHAT_NAME')
+      },
+
+      uploadAvatar() {
+        this.$ajax.post(
+          'http://10.0.21.16:8770/upload', {
+            img: this.avatarToUpload
+          })
       }
     },
     created() {
@@ -143,7 +156,7 @@
           border-radius: 4px;
           border: 1px solid #e3e3e3;
           width: 600px;
-          word-wrap: break-word; 
+          word-wrap: break-word;
       }
   }
   .message-item__others {
