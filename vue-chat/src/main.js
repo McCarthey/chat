@@ -5,11 +5,10 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 
-import { theme } from 'muse-ui'
 import Toast from 'muse-ui-toast';
 
 Vue.use(MuseUI)
-Vue.use(Toast)
+Vue.use(Toast, { position: 'top' ,time: 10000 })
 Vue.config.productionTip = false
 
 new Vue({
