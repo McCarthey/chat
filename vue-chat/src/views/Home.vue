@@ -134,39 +134,38 @@
       display: flex;
       text-align: left;
       margin: 10px;
-  }
-  .message-item__me {
-      justify-content: flex-start;
       .message-item__name {
           line-height: 40px;
           margin-right: 6px;
       }
       .message-item__text {
-          background-color: $color1;
           padding: 10px 6px;
           border-radius: 4px;
           border: 1px solid #e3e3e3;
           width: 600px;
-          &:hover {
-              background-color: darken($color: $color1, $amount: 5%);
-          }
+          word-wrap: break-word; 
       }
   }
   .message-item__others {
-      justify-content: flex-end;
+      justify-content: flex-start;
       .message-item__name {
-          line-height: 40px;
-          margin-right: 6px;
-          order: 10;
       }
       .message-item__text {
           background-color: #fff;
-          padding: 10px 6px;
-          border-radius: 4px;
-          border: 1px solid #e3e3e3;
-          width: 600px;
           &:hover {
               background-color: #efefef;
+          }
+      }
+  }
+  .message-item__me {
+      justify-content: flex-end;
+      .message-item__name {
+          order: 10;
+      }
+      .message-item__text {
+          background-color: $color1;
+          &:hover {
+              background-color: darken($color: $color1, $amount: 5%);
           }
       }
   }
