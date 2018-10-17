@@ -5,11 +5,14 @@
       <div class="message-item"
         :class="item.from === 'me'? 'message-item__me': 'message-item__others'"
         v-for="(item, index) in msgList"
-        :key="index">{{ item.from}}: {{ item.msg }}</div>
+        :key="index">
+        <p class="message-item__name">{{ item.from}}</p>
+        <p class="message-item__text">{{ item.msg }}</p>
+      </div>
     </div>
     <div class="input__wrap">
-      <mu-text-field v-model='inputText'
-        @keyup.enter="sendMessage"
+      <mu-text-field v-model.trim='inputText'
+        @keyup.enter.trim="sendMessage"
         multi-line
         :rows="4"
         solo
@@ -59,11 +62,11 @@
           console.log('chat closed', this.status)
         })
         this.socketObj.on('chat message', (from, msg) => {
-          this.msgList.push({ from, msg })
+          this.msgList.push({from, msg})
         })
       },
       sendMessage() {
-        if (!this.inputText) {
+        if (!this.inputText || this.inputText.replace(/(^\s*)|(\s*$)/g, "").length === 0) {
           console.log('Message cannot be empty!')
           return
         }
@@ -128,22 +131,43 @@
       }
   }
   .message-item {
+      display: flex;
       text-align: left;
       margin: 10px;
-      padding: 10px 6px;
-      border-radius: 4px;
-      border: 1px solid #e3e3e3;
   }
   .message-item__me {
-      background-color: $color1;
-      &:hover {
-          background-color: darken($color: $color1, $amount: 5%);
+      justify-content: flex-start;
+      .message-item__name {
+          line-height: 40px;
+          margin-right: 6px;
+      }
+      .message-item__text {
+          background-color: $color1;
+          padding: 10px 6px;
+          border-radius: 4px;
+          border: 1px solid #e3e3e3;
+          width: 600px;
+          &:hover {
+              background-color: darken($color: $color1, $amount: 5%);
+          }
       }
   }
   .message-item__others {
-      background-color: #fff;
-      &:hover {
-          background-color: #b5b5b5;
+      justify-content: flex-end;
+      .message-item__name {
+          line-height: 40px;
+          margin-right: 6px;
+          order: 10;
+      }
+      .message-item__text {
+          background-color: #fff;
+          padding: 10px 6px;
+          border-radius: 4px;
+          border: 1px solid #e3e3e3;
+          width: 600px;
+          &:hover {
+              background-color: #efefef;
+          }
       }
   }
 </style>
