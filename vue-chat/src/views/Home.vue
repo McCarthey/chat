@@ -1,6 +1,16 @@
 <template>
   <div class="home">
     <h1>Chat now</h1>
+    <el-upload class="avatar-uploader"
+      action="/upload"
+      :show-file-list="false"
+      :on-success="handleUploadSuccess">
+      <img v-if="avatarToUpload"
+        :src="avatarToUpload"
+        class="avatar">
+      <i v-else
+        class="el-icon-plus avatar-uploader-icon"></i>
+    </el-upload>
     <div class="message-content">
       <div class="message-item"
         :class="item.from === 'me'? 'message-item__me': 'message-item__others'"
@@ -21,14 +31,6 @@
         <mu-button color="primary"
           @click="sendMessage">Send</mu-button>
       </div>
-
-      <el-upload
-        action="/upload"
-        :file-list="fileList">
-        <el-button size="small"
-          type="primary">Upload</el-button>
-      </el-upload>
-      
     </div>
     <!-- <button @click="closeSocket">close socket</button> -->
     <name-dialog v-if="nameDialogShow"
@@ -50,8 +52,7 @@
       inputText: '',
       status: '',
 
-      avatarToUpload: null,
-      fileList: [],
+      avatarToUpload: '',
 
       nameDialogShow: false
     }),
@@ -102,11 +103,9 @@
         this.userName = localStorage.getItem('MC_CHAT_NAME')
       },
 
-      uploadAvatar() {
-        this.$ajax.post(
-          '/upload', {
-            img: this.fileList
-          })
+      handleUploadSuccess(res, file, fileList) {
+        console.log(res, file, fileList)
+        this.avatarToUpload = res
       }
     },
     created() {
@@ -184,6 +183,33 @@
               background-color: darken($color: $color1, $amount: 5%);
           }
       }
+  }
+
+  // 上传头像
+  .avatar-uploader .el-upload {
+      border: 1px dashed #d9d9d9;
+      border-radius: 6px;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+  }
+  .avatar-uploader .el-upload:hover {
+      border-color: #409eff;
+  }
+  .avatar-uploader-icon {
+      font-size: 28px;
+      color: #8c939d;
+      width: 60px;
+      height: 60px;
+      line-height: 60px;
+      text-align: center;
+      position: relative;
+      top: 15px;
+  }
+  .avatar {
+      width: 120px;
+      height: 120px;
+      display: block;
   }
 </style>
 

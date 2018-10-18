@@ -2,6 +2,7 @@
 node_modules
 /dist
 /vue-chat
+/uploads
 
 # local env files
 .env.local
