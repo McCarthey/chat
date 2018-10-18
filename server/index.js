@@ -37,9 +37,9 @@ io.on('connection', socket => {
     socket.on('disconnect', () => {
         console.log('user disconnected')
     })
-    socket.on('chat message', (from, msg) => {
-        console.log('I received a private message by ', from, ' saying ', msg);
-        socket.broadcast.emit('chat message', from, msg)
+    socket.on('chat message', (from, msg, avatar) => {
+        console.log('I received a message by ', from, ' saying ', msg, avatar);
+        socket.broadcast.emit('chat message', from, msg, avatar)
     })
 })
 

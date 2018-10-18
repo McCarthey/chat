@@ -16,7 +16,14 @@
         :class="item.from === 'me'? 'message-item__me': 'message-item__others'"
         v-for="(item, index) in msgList"
         :key="index">
-        <p class="message-item__name">{{ item.from}}</p>
+        <!-- <p class="message-item__name">{{ item.from }}</p> -->
+        <div class="message-item__avatar-wrap">
+          <img :src="item.avatar"
+            class="message-item__avatar"
+            alt="No Avatar"
+            width="40"
+            height="40">
+        </div>
         <p class="message-item__text">{{ item.msg }}</p>
       </div>
     </div>
@@ -71,8 +78,8 @@
           this.status = 'closed'
           console.log('chat closed', this.status)
         })
-        this.socketObj.on('chat message', (from, msg) => {
-          this.msgList.push({from, msg})
+        this.socketObj.on('chat message', (from, msg, avatar) => {
+          this.msgList.push({from, msg, avatar})
         })
       },
       sendMessage() {
@@ -80,11 +87,12 @@
           console.log('Message cannot be empty!')
           return
         }
-        this.socketObj.emit('chat message', this.userName, this.inputText)
+        this.socketObj.emit('chat message', this.userName, this.inputText, this.avatarToUpload)
         if (this.status && this.status !== 'closed') {
           const msgObj = {
             from: 'me',
-            msg: `${this.inputText}`
+            msg: `${this.inputText}`,
+            avatar: this.avatarToUpload
           }
           this.msgList.push(msgObj)
           this.inputText = ''
@@ -102,15 +110,20 @@
       getUserName() {
         this.userName = localStorage.getItem('MC_CHAT_NAME')
       },
-
+      getUserAvatar() {
+        this.avatarToUpload = localStorage.getItem('MC_CHAT_AVATAR')
+      },
+      // 头像上传成功后的回调
       handleUploadSuccess(res, file, fileList) {
         console.log(res, file, fileList)
         this.avatarToUpload = res
+        localStorage.setItem('MC_CHAT_AVATAR', this.avatarToUpload)
       }
     },
     created() {
       this.initSocket()
       this.getUserName()
+      this.getUserAvatar()
     },
     mounted() {
       if (!this.userName) {
@@ -160,6 +173,16 @@
           width: 600px;
           word-wrap: break-word;
       }
+      .message-item__avatar-wrap {
+          max-width: 40px;
+          max-height: 40px;
+          margin: 0 10px;
+          .message-item__avatar {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+          }
+      }
   }
   .message-item__others {
       justify-content: flex-start;
@@ -175,6 +198,9 @@
   .message-item__me {
       justify-content: flex-end;
       .message-item__name {
+          order: 10;
+      }
+      .message-item__avatar-wrap {
           order: 10;
       }
       .message-item__text {
