@@ -11,8 +11,12 @@ import Toast from 'muse-ui-toast';
 import VueMaterial from 'vue-material'
 import 'vue-material/dist/vue-material.min.css'
 
+import ElementUI from 'element-ui'
+import 'element-ui/lib/theme-chalk/index.css'
+
 Vue.use(MuseUI)
 Vue.use(VueMaterial)
+Vue.use(ElementUI)
 Vue.use(Toast, {position: 'top', time: 10000})
 
 Vue.config.productionTip = false

@@ -21,12 +21,14 @@
         <mu-button color="primary"
           @click="sendMessage">Send</mu-button>
       </div>
-      <md-field>
-        <label>Upload your avatar</label>
-        <md-file v-model="avatarToUpload" />
-      </md-field>
-      <mu-button color="success"
-        @click="uploadAvatar">upload</mu-button>
+
+      <el-upload
+        action="/upload"
+        :file-list="fileList">
+        <el-button size="small"
+          type="primary">Upload</el-button>
+      </el-upload>
+      
     </div>
     <!-- <button @click="closeSocket">close socket</button> -->
     <name-dialog v-if="nameDialogShow"
@@ -49,6 +51,7 @@
       status: '',
 
       avatarToUpload: null,
+      fileList: [],
 
       nameDialogShow: false
     }),
@@ -101,8 +104,8 @@
 
       uploadAvatar() {
         this.$ajax.post(
-          'http://10.0.21.16:8770/upload', {
-            img: this.avatarToUpload
+          '/upload', {
+            img: this.fileList
           })
       }
     },
