@@ -14,6 +14,8 @@ import 'vue-material/dist/vue-material.min.css'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 
+import localForage from "localforage"
+
 Vue.use(MuseUI)
 Vue.use(VueMaterial)
 Vue.use(ElementUI)
@@ -21,6 +23,7 @@ Vue.use(Toast, {position: 'top', time: 10000})
 
 Vue.config.productionTip = false
 Vue.prototype.$ajax = axios
+Vue.prototype.$localForage = localForage
 
 new Vue({
     router,

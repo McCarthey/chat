@@ -124,6 +124,7 @@
       this.initSocket()
       this.getUserName()
       this.getUserAvatar()
+      console.log(this.$localForage)
     },
     mounted() {
       if (!this.userName) {
