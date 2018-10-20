@@ -15,6 +15,9 @@ const storage = multer.diskStorage({
 })
 const upload = multer({ storage }) // for parsing multipart/form-data
 
+/**
+ * 连接mongodb，将数据库对象存放在全局变量db中
+ */
 const MongoClient = require('mongodb').MongoClient
 const url = 'mongodb://127.0.0.1:27017'
 let db
@@ -41,19 +44,32 @@ app.post('/upload', upload.single('file'), (req, res, next) => {
 })
 
 app.post('/signUp', async (req, res) => {
-    console.log(req.body)
     let data = req.body
-    const dbResult = await db.collection('users').insertOne({
-        username: data.username,
-        password: data.password
-    })
-    console.log(dbResult)
-    
-    res.send({
-        code: 0,
-        msg: 'Success!'
-    })
+    const isExisted = await checkUsername(data.username)
+    if (isExisted) {
+            res.send({
+            code: 101,
+            msg: 'Username already exists'
+        })
+    } else {
+        const dbResult = await db.collection('users').insertOne({
+            username: data.username,
+            password: data.password
+        })
+        res.send({
+            code: 0,
+            msg: 'Success!'
+        })
+    }
 })
+
+async function checkUsername(username) {
+    let queryRes = await db.collection('users').find({ username }).toArray()
+    let isExisted = queryRes.some(i => {
+        return i.username === username
+    })
+    return isExisted
+}
 
 io.on('connection', socket => {
     console.log('a user connected!')
