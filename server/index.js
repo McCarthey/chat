@@ -32,6 +32,14 @@ app.post('/upload', upload.single('file'), (req, res, next) => {
     res.send(`http://10.0.21.16:8770/uploads/${req.file.filename}`);
 })
 
+app.post('/signUp', (req, res) => {
+    console.log(req.body)
+    res.send({
+        code: 0,
+        msg: 'Success!'
+    })
+})
+
 io.on('connection', socket => {
     console.log('a user connected!')
     socket.on('disconnect', () => {
