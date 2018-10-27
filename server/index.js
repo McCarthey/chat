@@ -41,7 +41,7 @@ app.use(session({
     name: 'chat_app_sid',
     resave: false,
     saveUninitialized: true,
-    cookie: { maxAge: 60 * 1000 }
+    cookie: { userid: '', maxAge: 60 * 1000 }
 })) // using session
 
 // 检查是否已经登录过
@@ -75,9 +75,11 @@ app.post('/signUp', async (req, res) => {
     } else {
         const md5 = crypto.createHash('md5')
         const pwdMd5 = md5.update(data.password).digest('hex') // 得到加密后的密码
+        const uid = generateId(data.username)
         const dbResult = await db.collection('users').insertOne({
             username: data.username,
-            password: pwdMd5
+            password: pwdMd5,
+            uid
         })
         res.send({
             code: 0,
@@ -102,8 +104,10 @@ app.post('/login', async (req, res) => {
             username: data.username,
         })
         // console.log(dbResult.username)
-        if (dbResult.password === pwdMd5) {
+        const { username, password, uid } = dbResult
+        if (password === pwdMd5) {
             req.session.login = 'Logged'
+            res.cookie('uid', uid)
             res.send({
                 code: 0,
                 msg: 'Login successfully'
@@ -117,12 +121,20 @@ app.post('/login', async (req, res) => {
     }
 })
 
+// 检查用户名
 async function checkUsername(username) {
     let queryRes = await db.collection('users').find({ username }).toArray()
     let isExisted = queryRes.some(i => {
         return i.username === username
     })
     return isExisted
+}
+
+// 生成唯一的userId
+function generateId(data) {
+    const hash = crypto.createHash('sha256')
+    hash.update(data)
+    return hash.digest('hex')
 }
 
 io.on('connection', socket => {

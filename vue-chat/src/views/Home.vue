@@ -138,7 +138,6 @@
       this.getUserName()
       this.getUserAvatar()
       console.log(this.$localForage)
-      this.checkLoggIn()
     },
     mounted() {
       if (!this.userName) {
@@ -147,6 +146,11 @@
     },
     destroyed() {
       this.closeSocket()
+    },
+    beforeRouteEnter(to, from, next) {
+      next(vm => {
+        vm.checkLoggIn()
+      })
     }
   }
 </script>
