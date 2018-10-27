@@ -2,10 +2,13 @@
 	<div>
 		<div class="input-container">
 			<mu-tabs :value.sync="tabActive"
-			 center>
+			 center
+			 inverse
+			 :indicator-color="tabColor">
 				<mu-tab>Sign Up</mu-tab>
 				<mu-tab>Login</mu-tab>
 			</mu-tabs>
+			<br>
 			<div v-if="tabActive === 0">
 				<div class="sign-up__wrap">
 					<mu-text-field v-model="username"
@@ -39,7 +42,7 @@
 					 :type="visibility ? 'text' : 'password'"></mu-text-field>
 					<br />
 					<mu-button large
-					 color="info"
+					 color="success"
 					 class="sign-up__btn"
 					 @click="handleClickLogin">
 						Login
@@ -60,6 +63,11 @@
 			message: '',
 			tabActive: 0,
 		}),
+		computed: {
+			tabColor() {
+				return this.tabActive ? '#4caf50': '#2196f3'
+			}	
+		},
 		methods: {
 			async handleClickSignUp() {
 				const res = await this.$ajax.post('/signup', {
@@ -71,11 +79,6 @@
 				} else {
 					this.$toast.error(res.data.msg)
 				}
-			},
-			async handleClickTest() {
-				const res = await this.$ajax.get('/test')
-				console.log(res)
-				this.message = res.data
 			},
 			async handleClickLogin() {
 				const res = await this.$ajax.post('/login', {
@@ -102,16 +105,17 @@
 	.input-container {
 		width: 400px;
 		margin: 40px auto;
-	}
-	.sign-up__wrap {
+		border: 1px solid #e3e3e3;
+		border-radius: 0 0 8px 8px;
 		width: 400px;
 	    position: absolute;
-	    top: 20%;
+	    top: 30%;
 	    left: 50%;
 	    transform: translateX(-50%) translateY(-50%);
-	    border: 1px solid #ccc;
-	    border-radius: 8px;
-	    padding: 30px;
+		padding-bottom: 50px;
+	}
+	.sign-up__wrap {
+		
 	}
 	.sign-up__btn {
 	    width: 256px;

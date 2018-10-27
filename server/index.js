@@ -41,7 +41,7 @@ app.use(session({
     name: 'chat_app_sid',
     resave: false,
     saveUninitialized: true,
-    cookie: { userid: '', maxAge: 60 * 1000 }
+    cookie: { maxAge: 60 * 1000 }
 })) // using session
 
 // 检查是否已经登录过
@@ -119,6 +119,24 @@ app.post('/login', async (req, res) => {
             })
         }
     }
+})
+
+// 退出登录
+app.post('/logout', async (req, res) => {
+    req.session.destroy(err => {
+        if (err) {
+            res.send({
+                code: 998,
+                msg: 'log out failed'
+            })
+            return
+        }
+        res.clearCookie('uid')
+         res.send({
+             code: 0,
+             msg: 'Log out successfully'
+         })
+    })
 })
 
 // 检查用户名
