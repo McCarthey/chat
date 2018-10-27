@@ -44,6 +44,7 @@ app.use(session({
     cookie: { maxAge: 60 * 1000 }
 })) // using session
 
+// 检查是否已经登录过
 app.get('/checkLogin', (req, res) => {
     if (req.session.login) {
         res.send({
@@ -51,7 +52,6 @@ app.get('/checkLogin', (req, res) => {
             msg: 'You have logged in'
         });
     } else {
-        req.session.login = 'Logged'
         res.send({
             code: 999,
             msg: 'Please log in first'
@@ -63,6 +63,7 @@ app.post('/upload', upload.single('file'), (req, res, next) => {
     res.send(`http://10.0.21.16:8770/uploads/${req.file.filename}`);
 })
 
+// 注册
 app.post('/signUp', async (req, res) => {
     let data = req.body
     const isExisted = await checkUsername(data.username)
@@ -85,6 +86,7 @@ app.post('/signUp', async (req, res) => {
     }
 })
 
+// 登录
 app.post('/login', async (req, res) => {
     let data = req.body
     const isExisted = await checkUsername(data.username)
@@ -101,6 +103,7 @@ app.post('/login', async (req, res) => {
         })
         // console.log(dbResult.username)
         if (dbResult.password === pwdMd5) {
+            req.session.login = 'Logged'
             res.send({
                 code: 0,
                 msg: 'Login successfully'

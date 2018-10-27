@@ -58,7 +58,7 @@
 			password: '',
 			visibility: false,
 			message: '',
-			tabActive: 0
+			tabActive: 0,
 		}),
 		methods: {
 			async handleClickSignUp() {
@@ -89,7 +89,11 @@
 				}
 			}
 		},
-		created() {
+		mounted () {
+			console.log(this.$route.query)
+			if (this.$route.query && this.$route.query.type === 'login') {
+				this.tabActive = 1
+			}
 		}
 	}
 </script>

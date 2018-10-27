@@ -129,7 +129,7 @@
         const res = await this.$ajax.get('/checkLogin')
 				if (res.data.code !== 0) {
           this.$toast.error(res.data.msg)
-					this.$router.push({ name: 'signup' })
+					this.$router.push({ name: 'signup', query: { type: 'login' } })
 				}
       }
     },
