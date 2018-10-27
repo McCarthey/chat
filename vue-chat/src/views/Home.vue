@@ -122,6 +122,15 @@
         console.log(res, file, fileList)
         this.avatarToUpload = res
         localStorage.setItem('MC_CHAT_AVATAR', this.avatarToUpload)
+      },
+      
+      // 检查是否登录
+      async checkLoggIn() {
+        const res = await this.$ajax.get('/checkLogin')
+				if (res.data.code !== 0) {
+          this.$toast.error(res.data.msg)
+					this.$router.push({ name: 'signup' })
+				}
       }
     },
     created() {
@@ -129,6 +138,7 @@
       this.getUserName()
       this.getUserAvatar()
       console.log(this.$localForage)
+      this.checkLoggIn()
     },
     mounted() {
       if (!this.userName) {

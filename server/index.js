@@ -44,13 +44,18 @@ app.use(session({
     cookie: { maxAge: 60 * 1000 }
 })) // using session
 
-app.get('/test', (req, res) => {
-    if (req.session.isVisit) {
-        req.session.isVisit++
-        res.send(`You viewed this page ${req.session.isVisit} times`);
+app.get('/checkLogin', (req, res) => {
+    if (req.session.login) {
+        res.send({
+            code: 0,
+            msg: 'You have logged in'
+        });
     } else {
-        req.session.isVisit = 1
-        res.send('Hello world!')
+        req.session.login = 'Logged'
+        res.send({
+            code: 999,
+            msg: 'Please log in first'
+        });
     }
 });
 
