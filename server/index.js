@@ -4,6 +4,8 @@ const app = express()
 
 const bodyParser = require('body-parser')
 const multer = require('multer')
+const session = require('express-session')
+const parseurl = require('parseurl')
 
 const storage = multer.diskStorage({
     destination(req, file, cb) {
@@ -33,10 +35,23 @@ const server = app.listen(port, () => {
 const io = require('socket.io').listen(server)
 
 app.use(bodyParser.json()) // for parsing application/json
-app.use(bodyParser.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({extended: true})) // for parsing application/x-www-form-urlencoded
+app.use(session({
+    secret: 'random key',
+    name: 'chat_app_sid',
+    resave: false,
+    saveUninitialized: true,
+    cookie: { maxAge: 60 * 1000 }
+})) // using session
 
-app.get('/', (req, res) => {
-    res.send('Hello World!');
+app.get('/test', (req, res) => {
+    if (req.session.isVisit) {
+        req.session.isVisit++
+        res.send(`You viewed this page ${req.session.isVisit} times`);
+    } else {
+        req.session.isVisit = 1
+        res.send('Hello world!')
+    }
 });
 
 app.post('/upload', upload.single('file'), (req, res, next) => {

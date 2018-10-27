@@ -11,6 +11,9 @@
       <i v-else
         class="el-icon-plus avatar-uploader-icon"></i>
     </el-upload>
+    <div class="user-list">
+      <p v-for="(user,index) in userList" :key="index">{{ user.headUrl }} {{ user.name }}</p>
+    </div>
     <div class="message-content">
       <div class="message-item"
         :class="item.from === 'me'? 'message-item__me': 'message-item__others'"
@@ -61,7 +64,8 @@
 
       avatarToUpload: '',
 
-      nameDialogShow: false
+      nameDialogShow: false,
+      userList: []
     }),
     components: {
       NameDialog

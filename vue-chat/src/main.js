@@ -19,7 +19,7 @@ import localForage from "localforage"
 Vue.use(MuseUI)
 Vue.use(VueMaterial)
 Vue.use(ElementUI)
-Vue.use(Toast, {position: 'top', time: 10000})
+Vue.use(Toast, {position: 'top', time: 3000})
 
 Vue.config.productionTip = false
 Vue.prototype.$ajax = axios
