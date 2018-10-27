@@ -5,7 +5,7 @@ const app = express()
 const bodyParser = require('body-parser')
 const multer = require('multer')
 const session = require('express-session')
-const parseurl = require('parseurl')
+const crypto = require('crypto')
 
 const storage = multer.diskStorage({
     destination(req, file, cb) {
@@ -35,7 +35,7 @@ const server = app.listen(port, () => {
 const io = require('socket.io').listen(server)
 
 app.use(bodyParser.json()) // for parsing application/json
-app.use(bodyParser.urlencoded({extended: true})) // for parsing application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
 app.use(session({
     secret: 'random key',
     name: 'chat_app_sid',
@@ -62,19 +62,50 @@ app.post('/signUp', async (req, res) => {
     let data = req.body
     const isExisted = await checkUsername(data.username)
     if (isExisted) {
-            res.send({
+        res.send({
             code: 101,
             msg: 'Username already exists'
         })
     } else {
+        const md5 = crypto.createHash('md5')
+        const pwdMd5 = md5.update(data.password).digest('hex') // 得到加密后的密码
         const dbResult = await db.collection('users').insertOne({
             username: data.username,
-            password: data.password
+            password: pwdMd5
         })
         res.send({
             code: 0,
             msg: 'Success!'
         })
+    }
+})
+
+app.post('/login', async (req, res) => {
+    let data = req.body
+    const isExisted = await checkUsername(data.username)
+    if (!isExisted) {
+        res.send({
+            code: 102,
+            msg: 'No such user, please sign up first'
+        })
+    } else {
+        const md5 = crypto.createHash('md5')
+        const pwdMd5 = md5.update(data.password).digest('hex') // 得到加密后的密码
+        const dbResult = await db.collection('users').findOne({
+            username: data.username,
+        })
+        // console.log(dbResult.username)
+        if (dbResult.password === pwdMd5) {
+            res.send({
+                code: 0,
+                msg: 'Login successfully'
+            })
+        } else {
+            res.send({
+                code: 103,
+                msg: 'Invalid username or password'
+            })
+        }
     }
 })
 

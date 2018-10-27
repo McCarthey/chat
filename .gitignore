@@ -1,7 +1,7 @@
 .DS_Store
 node_modules
 /dist
-/vue-chat
+/vue-chat/vue-chat
 /uploads
 
 # local env files
