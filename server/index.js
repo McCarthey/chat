@@ -139,6 +139,13 @@ app.post('/logout', async (req, res) => {
     })
 })
 
+app.get('/test', (req, res) => {
+    res.send({
+        code: 0,
+        msg: 'Hello this is a test'
+    })
+})
+
 // 检查用户名
 async function checkUsername(username) {
     let queryRes = await db.collection('users').find({ username }).toArray()
